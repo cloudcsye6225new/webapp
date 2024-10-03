@@ -1,5 +1,8 @@
+import os
 import sys
-sys.path.append("..")
+file_dir = os.path.dirname(os.path.abspath(__file__))
+root_folder_dir = os.path.abspath(os.path.join(file_dir, os.pardir, os.pardir))
+sys.path.append(root_folder_dir+"/App_Test/")
 
 import pytest
 
@@ -15,7 +18,7 @@ from database import Base, get_db
 from main import app
 from routes.user import get_user
 
-import os
+
 POSTGRES_PASSWORD = os.getenv("DATABASE_PASSWORD")
 POSTGRES_HOST = os.getenv("DATABASE_HOSTNAME")
 POSTGRES_DATABASE = os.getenv("TEST_DB")

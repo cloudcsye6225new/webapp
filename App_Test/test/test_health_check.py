@@ -24,7 +24,7 @@ if is_github_actions:
     POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
     POSTGRES_HOST = os.getenv("PGHOST")
     POSTGRES_DATABASE = os.getenv("TEST_DB")
-    DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/test"
+    DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
 
 
 engine = create_engine(DATABASE_URL)

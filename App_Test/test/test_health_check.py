@@ -18,11 +18,13 @@ from database import Base, get_db
 from main import app
 from routes.user import get_user
 
+is_github_actions= os.getenv("CI") == "true"
 
-POSTGRES_PASSWORD = os.getenv("DATABASE_PASSWORD")
-POSTGRES_HOST = os.getenv("DATABASE_HOSTNAME")
-POSTGRES_DATABASE = os.getenv("TEST_DB")
-DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
+if is_github_actions:
+    POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
+    POSTGRES_HOST = os.getenv("PGHOST")
+    POSTGRES_DATABASE = os.getenv("TEST_DB")
+    DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/test"
 
 
 engine = create_engine(DATABASE_URL)

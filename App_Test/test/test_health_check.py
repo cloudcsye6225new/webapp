@@ -23,7 +23,7 @@ is_github_actions= os.getenv("CI") == "true"
 if is_github_actions:
     POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
     POSTGRES_HOST = os.getenv("PGHOST")
-    POSTGRES_DATABASE = os.getenv("TEST_DB")
+    POSTGRES_DATABASE = os.getenv("TEST_DATABASE")
     DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
 
 

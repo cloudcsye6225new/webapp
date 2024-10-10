@@ -78,4 +78,5 @@ jobs:
 
       - name: Wait for FastAPI to start
         run: |
+          cd App_Test
           pytest

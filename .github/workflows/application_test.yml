@@ -60,6 +60,7 @@ jobs:
           pwd
           ls
           cd App_Test
+          ls
         
       - name: Install pip dependencies
         run: |

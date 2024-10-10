@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -51,7 +54,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.x" # Replace with your desired Python version
-
+      
+      - name: changing directory
+        run: |
+          cd App_Test
+        
       - name: Install pip dependencies
         run: |
           pip install -r requirements.txt

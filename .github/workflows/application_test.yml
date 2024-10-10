@@ -19,6 +19,8 @@ jobs:
       PGUSER: postgres
       PGPASSWORD: ${{ secrets.PGPASSWORD }}
       PGDATABASE: ${{ secrets.PGDATABASE }}
+      TEST_DATABASE: ${{ secrets.TEST_DATABASE }}
+
 
     steps:
       - name: Checkout code
@@ -47,6 +49,7 @@ jobs:
       - name: Create PostgreSQL database
         run: |
           psql -h localhost -U postgres -d postgres -c "CREATE DATABASE ${{ secrets.PGDATABASE }};"
+          psql -h localhost -U postgres -d postgres -c "CREATE DATABASE ${{ secrets.TEST_DATABASE }};"
       - name: List PostgreSQL databases
         run: |
           psql -h localhost -U postgres -l

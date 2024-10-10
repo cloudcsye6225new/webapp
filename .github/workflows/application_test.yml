@@ -57,6 +57,8 @@ jobs:
       
       - name: changing directory
         run: |
+          pwd
+          ls
           cd App_Test
         
       - name: Install pip dependencies

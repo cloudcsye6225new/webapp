@@ -61,10 +61,10 @@ jobs:
           ls
           cd App_Test
           ls
-        
-      - name: Install pip dependencies
-        run: |
           pip install -r requirements.txt
+
+        
+     
       - name: install psycopg2
         run: |
           sudo apt install libpq-dev
@@ -72,7 +72,7 @@ jobs:
           # Install uvicorn
           pip install uvicorn
       - name: Run FastAPI application
-        run: uvicorn App.main:app --host 0.0.0.0 --port 8000 --reload &
+        run: uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
 
       - name: Wait for FastAPI to start
         run: |

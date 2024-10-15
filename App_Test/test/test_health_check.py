@@ -63,9 +63,9 @@ def test_create_user():
         }
     )
     if response.status_code == status.HTTP_201_CREATED:
-        assert response.status_code == status.HTTP_201_CREATED
+        assert response.status_code != status.HTTP_201_CREATED
     else:
-        assert response.status_code == 400 
+        assert response.status_code != 400 
     # assert response.json()["email"] == "john.doe@example.com"
 
 # def test_get_user():

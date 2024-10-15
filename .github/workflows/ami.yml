@@ -107,6 +107,9 @@ jobs:
           curl -fsSL https://releases.hashicorp.com/packer/1.7.3/packer_1.7.3_linux_amd64.zip -o packer.zip
           unzip packer.zip
           sudo mv packer /usr/local/bin/
+          ls
+          pwd
+          cd App_Test
           packer init packer-webapp.pkr.hcl
 
           packer build -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \

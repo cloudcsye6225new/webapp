@@ -1,4 +1,4 @@
-name: Application_Test
+name: Ami_Test_Creation
 
 on:
   push:

@@ -108,3 +108,15 @@ jobs:
           unzip packer.zip
           sudo mv packer /usr/local/bin/
           packer init packer-webapp.pkr.hcl
+
+          packer build -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+             -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+             -var "aws_region=${{ secrets.AWS_REGION }}" \
+             -var "ami_name_prefix=${{ secrets.AMI_NAME_PREFIX }}" \
+             -var "source_ami=${{ secrets.SOURCE_AMI }}" \
+             -var "instance_type=${{ secrets.INSTANCE_TYPE }}" \
+             -var "ssh_username=${{ secrets.SSH_USERNAME }}" \
+             -var "DB_NAME=${{ secrets.DATABASE_NAME }}" \
+             -var "DB_USER=postgres" \
+             -var "DB_PASSWORD=${{ secrets.PGPASSWORD }}" \
+             packer-webapp.pkr.hcl

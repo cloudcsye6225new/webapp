@@ -154,6 +154,9 @@ build {
       "sudo chmod 755 /opt/csye6225/App_Test",
         # Create a Python virtual environment
       "python3 -m venv /opt/csye6225/App_Test/myenv",
+    # Set ownership and permissions for myenv directory
+      "sudo chown -R csye6225:csye6225 /opt/csye6225/App_Test/myenv",
+      "sudo chmod -R 755 /opt/csye6225/App_Test/myenv",
     
       # Activate the virtual environment and install requirements
       "echo 'activatingggggggggggggg'",

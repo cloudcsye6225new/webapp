@@ -151,14 +151,14 @@ build {
       "sudo ls",
       "sudo pwd",
         # Create a Python virtual environment
-      "python3 -m venv /opt/csye6225/webapp/App_Test/myenv",
+      "python3 -m venv /opt/csye6225/App_Test/myenv",
     
       # Activate the virtual environment and install requirements
       "echo 'activatingggggggggggggg'",
-      " . /opt/csye6225/webapp/App_Test/myenv/bin/activate",
+      " . /opt/csye6225/App_Test/myenv/bin/activate",
       "echo 'pip installationnnnnnnn'",
-      " pip install -r /opt/csye6225/webapp/App_Test/requirements.txt",
-      "sudo mv /opt/csye6225/webapp/.env /opt/csye6225/webapp/App_Test/",
+      " pip install -r /opt/csye6225/App_Test/requirements.txt",
+      "sudo mv /opt/csye6225/.env /opt/csye6225/App_Test/",
     # Install psycopg2
       "echo 'installing libpq'",
       "sudo apt install -y libpq-dev",

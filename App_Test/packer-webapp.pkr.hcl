@@ -147,7 +147,7 @@ build {
 
 
       "sudo apt install -y python3-venv ",
-      "ECHO 'DIRECTORY AFTER UNZIPPING EVERYTHINGGGGGGGGGGGG'",
+      "echo 'DIRECTORY AFTER UNZIPPING EVERYTHINGGGGGGGGGGGG'",
       "sudo ls",
       "sudo pwd",
         # Create a Python virtual environment

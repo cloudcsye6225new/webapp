@@ -169,6 +169,10 @@ build {
       "sudo apt remove git -y",
       "echo 'Final directory contents:'",
       "ls -al",
+      "sudo mv my_fastapi_app.service /etc/systemd/system/",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable my_fastapi_app",
+      "sudo systemctl start my_fastapi_app",
       "echo 'Provisioning script completed'"
     ]
   }

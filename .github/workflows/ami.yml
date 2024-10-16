@@ -107,6 +107,7 @@ jobs:
           curl -fsSL https://releases.hashicorp.com/packer/1.7.3/packer_1.7.3_linux_amd64.zip -o packer.zip
           unzip packer.zip
           sudo mv packer /usr/local/bin/
+          sudo mv weapp.zip ./App_Test/
           ls
           pwd
           cd App_Test

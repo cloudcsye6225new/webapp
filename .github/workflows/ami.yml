@@ -105,6 +105,8 @@ jobs:
         run: |
           ls
           pwd
+          sudo mv /home/runner/work/webapp/webapp/webapp.zip /home/runner/work/webapp/webapp/App_Test/
+          
 
       - name: Run Packer
         run: |

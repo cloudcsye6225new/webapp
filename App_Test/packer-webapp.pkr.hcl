@@ -66,10 +66,10 @@ source "amazon-ebs" "ubuntu-ami" {
 
   access_key = var.aws_access_key
   secret_key = var.aws_secret_access_key
-  
 
- 
-  
+
+
+
 }
 
 
@@ -89,9 +89,9 @@ build {
       "DB_NAME=${var.DB_NAME}"
     ]
     inline = [
-      "set -ex",  # Enable debugging and exit on error
-      "sudo apt-get update -y",      # Update package list
-      "sudo apt-get install unzip -y",  # Install unzip utility
+      "set -ex",                       # Enable debugging and exit on error
+      "sudo apt-get update -y",        # Update package list
+      "sudo apt-get install unzip -y", # Install unzip utility
       "echo 'Starting provisioning script'",
       "echo 'Creating group csye6225'",
       "sudo groupadd csye6225 || echo 'Group already exists'",
@@ -139,9 +139,9 @@ build {
       "echo 'Waiting for PostgreSQL to start'",
       "timeout 5 bash -c 'until sudo -u postgres psql -c \"\\l\" &>/dev/null; do sleep 1; done'",
       "echo 'Creating PostgreSQL user and database'",
-      "echo \"ALTER USER postgres WITH ENCRYPTED PASSWORD '${var.DB_PASSWORD}';\" | sudo -u postgres psql",  # Set the password from the environment variable
-      "sudo -u postgres psql -c \"CREATE DATABASE ${var.DB_NAME};\"",  # Create database using environment variable
-      "sudo -u postgres psql -c \"CREATE DATABASE test_database_name;\"",  # Replace with your actual test database name
+      "echo \"ALTER USER postgres WITH ENCRYPTED PASSWORD '${var.DB_PASSWORD}';\" | sudo -u postgres psql", # Set the password from the environment variable
+      "sudo -u postgres psql -c \"CREATE DATABASE ${var.DB_NAME};\"",                                       # Create database using environment variable
+      "sudo -u postgres psql -c \"CREATE DATABASE test_database_name;\"",                                   # Replace with your actual test database name
       "echo 'List of PostgreSQL databases:'",
       "sudo -u postgres psql -l",
 
@@ -152,7 +152,7 @@ build {
       "sudo pwd",
       "sudo chown -R csye6225:csye6225 /opt/csye6225/App_Test",
       "sudo chmod 755 /opt/csye6225/App_Test",
-       # Switch to csye6225 user and create the virtual environment
+      # Switch to csye6225 user and create the virtual environment
       "echo 'Creating virtual environment as csye6225 user'",
       "sudo -u csye6225 python3 -m venv /opt/csye6225/App_Test/myenv",
 
@@ -160,7 +160,7 @@ build {
       "echo 'Activating virtual environment and installing requirements'",
       "sudo -u csye6225 bash -c 'source /opt/csye6225/App_Test/myenv/bin/activate && /opt/csye6225/App_Test/myenv/bin/pip install -r /opt/csye6225/App_Test/requirements.txt'",
       "sudo mv /opt/csye6225/.env /opt/csye6225/App_Test/",
-    # Install psycopg2
+      # Install psycopg2
       "echo 'installing libpq'",
       "sudo apt install -y libpq-dev",
       "echo 'Setting ownership of /opt/csye6225 contents'",

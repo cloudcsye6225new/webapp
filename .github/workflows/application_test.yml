@@ -104,5 +104,6 @@ jobs:
 
       - name: Run Packer validate
         run: |
+          cd App_Test
           packer validate .
         id: packer_validate

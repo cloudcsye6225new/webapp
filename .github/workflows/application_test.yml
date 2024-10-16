@@ -91,7 +91,7 @@ jobs:
 
       - name: Run Packer fmt
         run: |
-          sudo cd App_Test
+          cd App_Test
           packer fmt -check .
         continue-on-error: true
         id: packer_fmt

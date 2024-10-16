@@ -103,7 +103,6 @@ jobs:
           
       - name: Moving Zip to APP_TEST
         run: |
-          sudo mv webapp.zip /App_Test/
           ls
           pwd
 

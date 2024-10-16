@@ -146,7 +146,7 @@ build {
       "sudo -u postgres psql -l",
 
 
-      "sudo apt install -y python3-venv ",
+      "sudo apt install -y python3-venv python3-pip ",
       "echo 'DIRECTORY AFTER UNZIPPING EVERYTHINGGGGGGGGGGGG'",
       "sudo ls",
       "sudo pwd",

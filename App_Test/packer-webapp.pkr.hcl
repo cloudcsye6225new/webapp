@@ -154,15 +154,14 @@ build {
       "sudo chmod 755 /opt/csye6225/App_Test",
         # Create a Python virtual environment
       "python3 -m venv /opt/csye6225/App_Test/myenv",
-    # Set ownership and permissions for myenv directory
-      "sudo chown -R csye6225:csye6225 /opt/csye6225/App_Test/myenv",
-      "sudo chmod -R 755 /opt/csye6225/App_Test/myenv",
-    
+    # Activate the virtual environment and install requirements
+       # Switch to csye6225 user and create the virtual environment
+      "echo 'Creating virtual environment as csye6225 user'",
+      "sudo -u csye6225 python3 -m venv /opt/csye6225/App_Test/myenv",
+
       # Activate the virtual environment and install requirements
-      "echo 'activatingggggggggggggg'",
-      " . /opt/csye6225/App_Test/myenv/bin/activate",
-      "echo 'pip installationnnnnnnn'",
-      " pip install -r /opt/csye6225/App_Test/requirements.txt",
+      "echo 'Activating virtual environment and installing requirements'",
+      "sudo -u csye6225 bash -c 'source /opt/csye6225/App_Test/myenv/bin/activate && /opt/csye6225/App_Test/myenv/bin/pip install -r /opt/csye6225/App_Test/requirements.txt'",
       "sudo mv /opt/csye6225/.env /opt/csye6225/App_Test/",
     # Install psycopg2
       "echo 'installing libpq'",

@@ -163,7 +163,6 @@ build {
     # Install psycopg2
       "echo 'installing libpq'",
       "sudo apt install -y libpq-dev",
-      "pip install psycopg2-binary",
       "echo 'Setting ownership of /opt/csye6225 contents'",
       "sudo chown -R csye6225:csye6225 /opt/csye6225",
       "echo 'Removing git'",

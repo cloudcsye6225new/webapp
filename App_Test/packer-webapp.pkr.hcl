@@ -147,6 +147,9 @@ build {
 
 
       "sudo apt install -y python3-venv ",
+      "ECHO 'DIRECTORY AFTER UNZIPPING EVERYTHINGGGGGGGGGGGG'",
+      "sudo ls",
+      "sudo pwd",
         # Create a Python virtual environment
       "python3 -m venv /opt/csye6225/webapp/App_Test/myenv",
     

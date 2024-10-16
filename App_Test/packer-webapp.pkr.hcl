@@ -150,6 +150,8 @@ build {
       "echo 'DIRECTORY AFTER UNZIPPING EVERYTHINGGGGGGGGGGGG'",
       "sudo ls",
       "sudo pwd",
+      "sudo chown -R csye6225:csye6225 /opt/csye6225/App_Test",
+      "sudo chmod 755 /opt/csye6225/App_Test",
         # Create a Python virtual environment
       "python3 -m venv /opt/csye6225/App_Test/myenv",
     

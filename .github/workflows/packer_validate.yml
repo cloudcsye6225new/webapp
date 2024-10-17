@@ -32,7 +32,7 @@ jobs:
       - name: Packer Init
         run: | 
           cd App_Test/
-          "packer init packer-webapp.pkr.hcl"
+          packer init packer-webapp.pkr.hcl
 
       - name: Packer Validate
         run: |

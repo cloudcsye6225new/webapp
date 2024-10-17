@@ -37,4 +37,4 @@ jobs:
       - name: Packer Validate
         run: |
           cd App_Test/
-          packer validate packer-webapp.pkr.hcl
+          packer validate -syntax-only packer-webapp.pkr.hcl

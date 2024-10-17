@@ -24,7 +24,9 @@ jobs:
           packer fmt -check packer-webapp.pkr.hcl
           
       - name: Packer Init
-        run: "packer init ./App/packer-webapp.pkr.hcl"
+        run: | 
+          cd App_Test/
+          "packer init packer-webapp.pkr.hcl"
 
       - name: Packer Validate
         run: |

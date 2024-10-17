@@ -160,3 +160,20 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Cache objects
+packer_cache/
+
+# Crash log
+crash.log
+
+# https://www.packer.io/guides/hcl/variables
+# Exclude all .pkrvars.hcl files, which are likely to contain sensitive data, 
+# such as password, private keys, and other secrets. These should not be part of 
+# version control as they are data points which are potentially sensitive and 
+# subject to change depending on the environment.
+#
+*.pkrvars.hcl
+
+# For built boxes
+*.box

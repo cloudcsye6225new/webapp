@@ -1,0 +1,40 @@
+name: Packer_Checks
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: pr-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@v2
+        with:
+          packer_version: latest
+     
+      - name: Packer Install
+        run: |
+          sudo apt install unzip
+          curl -fsSL https://releases.hashicorp.com/packer/1.7.3/packer_1.7.3_linux_amd64.zip -o packer.zip
+          unzip packer.zip
+          sudo mv packer /usr/local/bin/
+      - name: Packer Format
+        run: |
+          cd App_Test/
+          packer fmt -check packer-webapp.pkr.hcl
+          
+      - name: Packer Init
+        run: | 
+          cd App_Test/
+          packer init packer-webapp.pkr.hcl
+
+      - name: Packer Validate
+        run: |
+          cd App_Test/
+          packer validate -syntax-only packer-webapp.pkr.hcl

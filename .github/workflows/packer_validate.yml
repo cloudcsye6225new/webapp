@@ -21,7 +21,7 @@ jobs:
       - name: Packer Format
         run: |
           cd App_Test/
-          packer fmt -check
+          packer fmt -check packer-webapp.pkr.hcl
 
       - name: Packer Validate
         run: |

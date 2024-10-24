@@ -71,9 +71,6 @@ source "amazon-ebs" "ubuntu-ami" {
 
 
 }
-post-processor "amazon-ami-sharing" {
-  ami_users = ["686255977156", "650251683434"]
-}
 
 build {
   name    = "Assignment 4"
@@ -178,4 +175,8 @@ build {
       "echo 'Provisioning script completed'"
     ]
   }
+  post-processor "amazon-ami-sharing" {
+  ami_users = ["686255977156", "650251683434"]
+}
+
 }

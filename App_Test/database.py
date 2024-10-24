@@ -20,14 +20,14 @@ if is_github_actions:
 
 else:
     # Load environment variables from the ".env" file
-        load_dotenv(".env")
-        POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
+        load_dotenv("app.env")
+        POSTGRES_PASSWORD = os.getenv("DB_PASSWORD")
         print(POSTGRES_PASSWORD)
-        POSTGRES_HOST = os.getenv("PGHOST")
-        POSTGRES_DATABASE=os.getenv("DATABASE_NAME")
-       
+        POSTGRES_HOST = os.getenv("DB_HOST")
+        POSTGRES_DATABASE=os.getenv("DB_NAME")
+        POSTGRES_USER = os.getenv("DB_USER")
 
-        DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
+        DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
   
 
 engine = create_engine(

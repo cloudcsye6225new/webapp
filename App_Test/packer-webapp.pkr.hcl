@@ -63,9 +63,9 @@ source "amazon-ebs" "ubuntu-ami" {
   instance_type   = var.instance_type
   ssh_username    = var.ssh_username
   region          = var.aws_region
-
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_access_key
+  ami_users       = ["686255977156", "650251683434"]
+  access_key      = var.aws_access_key
+  secret_key      = var.aws_secret_access_key
 
 
 
@@ -131,18 +131,18 @@ build {
       "sudo unzip webapp.zip",
       "ls",
 
-      #Postgres code
-      "sudo apt-get install -y postgresql postgresql-contrib",
-      "echo 'Starting PostgreSQL service'",
-      "sudo service postgresql start",
-      "echo 'Waiting for PostgreSQL to start'",
-      "timeout 5 bash -c 'until sudo -u postgres psql -c \"\\l\" &>/dev/null; do sleep 1; done'",
-      "echo 'Creating PostgreSQL user and database'",
-      "echo \"ALTER USER postgres WITH ENCRYPTED PASSWORD '${var.DB_PASSWORD}';\" | sudo -u postgres psql", # Set the password from the environment variable
-      "sudo -u postgres psql -c \"CREATE DATABASE ${var.DB_NAME};\"",                                       # Create database using environment variable
-      "sudo -u postgres psql -c \"CREATE DATABASE test_database_name;\"",                                   # Replace with your actual test database name
-      "echo 'List of PostgreSQL databases:'",
-      "sudo -u postgres psql -l",
+      # #Postgres code
+      # "sudo apt-get install -y postgresql postgresql-contrib",
+      # "echo 'Starting PostgreSQL service'",
+      # "sudo service postgresql start",
+      # "echo 'Waiting for PostgreSQL to start'",
+      # "timeout 5 bash -c 'until sudo -u postgres psql -c \"\\l\" &>/dev/null; do sleep 1; done'",
+      # "echo 'Creating PostgreSQL user and database'",
+      # "echo \"ALTER USER postgres WITH ENCRYPTED PASSWORD '${var.DB_PASSWORD}';\" | sudo -u postgres psql", # Set the password from the environment variable
+      # "sudo -u postgres psql -c \"CREATE DATABASE ${var.DB_NAME};\"",                                       # Create database using environment variable
+      # "sudo -u postgres psql -c \"CREATE DATABASE test_database_name;\"",                                   # Replace with your actual test database name
+      # "echo 'List of PostgreSQL databases:'",
+      # "sudo -u postgres psql -l",
 
 
       "sudo apt install -y python3-venv python3-pip ",
@@ -175,8 +175,4 @@ build {
       "echo 'Provisioning script completed'"
     ]
   }
-  post-processor "amazon-ami-sharing" {
-    ami_users = ["686255977156", "650251683434"]
-  }
-
 }

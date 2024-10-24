@@ -8,10 +8,17 @@ class UserCreate(BaseModel):
     email: EmailStr 
     password: str
 
-class UserOut(BaseModel):
+class UserPostOut(BaseModel):
     first_name: str
     last_name: str
     email: str
+class UserOut(BaseModel):
+    id : int
+    first_name: str
+    last_name: str
+    email: str
+    account_created: datetime
+    account_updated: datetime
     
 class UserCredentials(BaseModel):
     first_name: str

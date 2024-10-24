@@ -63,7 +63,6 @@ source "amazon-ebs" "ubuntu-ami" {
   instance_type   = var.instance_type
   ssh_username    = var.ssh_username
   region          = var.aws_region
-  ubuntu_users = 
 
   access_key = var.aws_access_key
   secret_key = var.aws_secret_access_key

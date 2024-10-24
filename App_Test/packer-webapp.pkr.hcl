@@ -176,7 +176,7 @@ build {
     ]
   }
   post-processor "amazon-ami-sharing" {
-  ami_users = ["686255977156", "650251683434"]
-}
+    ami_users = ["686255977156", "650251683434"]
+  }
 
 }

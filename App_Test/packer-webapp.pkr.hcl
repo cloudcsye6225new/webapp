@@ -63,6 +63,7 @@ source "amazon-ebs" "ubuntu-ami" {
   instance_type   = var.instance_type
   ssh_username    = var.ssh_username
   region          = var.aws_region
+  ubuntu_users = 
 
   access_key = var.aws_access_key
   secret_key = var.aws_secret_access_key
@@ -71,7 +72,9 @@ source "amazon-ebs" "ubuntu-ami" {
 
 
 }
-
+post-processor "amazon-ami-sharing" {
+  ami_users = ["686255977156", "650251683434"]
+}
 
 build {
   name    = "Assignment 4"

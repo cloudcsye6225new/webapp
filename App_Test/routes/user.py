@@ -14,7 +14,7 @@ userRouter = APIRouter()
 
 models.Base.metadata.create_all(bind = engine)
 
-@userRouter.post('/users', status_code= status.HTTP_201_CREATED, response_model= schema.UserOut)
+@userRouter.post('/v1/user', status_code= status.HTTP_201_CREATED, response_model= schema.UserOut)
 def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
 
     existing_user = db.query(User).filter(User.email == user.email).first()
@@ -23,36 +23,22 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
             raise HTTPException(status_code= 400, detail="Email already registered.")
 
     try:
-        # Check if the email already exists in the database
-        # existing_user = db.query(User).filter(User.email == user.email).first()
-        # existing_user = db.query(User).all()
-        # existing_user.dict()
-        # existing_user.__dict__
-        # print(existing_user.__dict__['email'])
-        # if existing_user.__dict__['email'] == user.email:
-        #     raise HTTPException(status_code= 400, detail="Email already registered.")
-
-
-        # Create the user
         new_user = models.User(**user.dict())
         password_hash = bcrypt.hashpw(new_user.password.encode('utf-8'), bcrypt.gensalt())
         user_model = models.User(
             first_name=new_user.first_name,
             last_name=new_user.last_name,
             email=new_user.email,
-            password=password_hash.decode('utf-8')
+            password=password_hash.decode('utf-8'),
         )
         db.add(user_model)
         db.commit()
         db.refresh(user_model)
 
-        first_name = new_user.first_name
-        last_name = new_user.last_name
-        email = new_user.email
-        password = password_hash.decode('utf-8')
+        
 
 
-        return {"first_name": new_user.first_name, "last_name": new_user.last_name, "email": new_user.email}
+        return user_model
     except Exception as e:
         # Handle exceptions, possibly raise an HTTPException if there's an error
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User creation failed")
@@ -60,7 +46,7 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
         # Close the database session when done, regardless of success or failure
         db.close()
 
-@userRouter.put("/users/update_user", status_code=status.HTTP_200_OK)
+@userRouter.put("/v1/user/self")
 def update_user(
     user_update: schema.UserUpdate,
     current_user: models.User = Depends(get_authenticated_user),
@@ -86,14 +72,7 @@ def update_user(
         db.commit()
         db.refresh(current_user)
 
-        return {
-            "message": "User information updated successfully",
-            "user": {
-                "first_name": current_user.first_name,
-                "last_name": current_user.last_name,
-                "email": current_user.email,
-            }
-        }
+        return Response(status_code= 204)
     except ValueError as v:
         raise HTTPException(status_code= 400, detail = f"{v}")
     except Exception as e:
@@ -103,7 +82,7 @@ def update_user(
             detail=f"An error occurred {e} while updating user information"
         )
     
-@userRouter.get('/users/get_user', response_model=schema.UserOut)
+@userRouter.get('/v1/user/self', response_model=schema.UserOut)
 def get_user(current_user: User = Depends(get_authenticated_user)):
     if not current_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")

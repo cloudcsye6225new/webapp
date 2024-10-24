@@ -18,12 +18,23 @@ from database import Base, get_db
 from main import app
 from routes.user import get_user
 
+from dotenv import load_dotenv
+
 is_github_actions= os.getenv("CI") == "true"
 
 if is_github_actions:
     POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
     POSTGRES_HOST = os.getenv("PGHOST")
     POSTGRES_DATABASE = os.getenv("TEST_DATABASE")
+    DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
+else:
+    load_dotenv(".env")
+    POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
+    print(POSTGRES_PASSWORD)
+    POSTGRES_HOST = os.getenv("PGHOST")
+    POSTGRES_DATABASE=os.getenv("TEST_DATABASE")
+    
+
     DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
 
 
@@ -54,7 +65,7 @@ client = TestClient(app)
 
 def test_create_user():
     response = client.post(
-        "/users",
+        "/v1/user",
         json={
             "first_name": "John",
             "last_name": "Doe",
@@ -81,7 +92,7 @@ def get_basic_auth_header(username, password):
 def test_get_user():
     auth_header = get_basic_auth_header("john.doe@example.com", "password123")
     response = client.get(
-        "/users/get_user",
+        "/v1/user/self",
         headers={"Authorization": auth_header}
     )
     assert response.status_code == status.HTTP_200_OK

@@ -126,7 +126,4 @@ jobs:
              -var "source_ami=${{ secrets.SOURCE_AMI }}" \
              -var "instance_type=${{ secrets.INSTANCE_TYPE }}" \
              -var "ssh_username=${{ secrets.SSH_USERNAME }}" \
-             -var "DB_NAME=${{ secrets.DATABASE_NAME }}" \
-             -var "DB_USER=postgres" \
-             -var "DB_PASSWORD=${{ secrets.PGPASSWORD }}" \
              packer-webapp.pkr.hcl

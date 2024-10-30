@@ -44,18 +44,6 @@ variable "ami_name_prefix" {
   default = "network_fall_2024-webapp"
 }
 
-variable "DB_NAME" {
-  type = string
-}
-
-variable "DB_PASSWORD" {
-  type = string
-}
-
-variable "DB_USER" {
-  type = string
-}
-
 source "amazon-ebs" "ubuntu-ami" {
   ami_name        = "${var.ami_name_prefix}_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "AMI Network Fall 2024 [Assignment 4]"
@@ -81,12 +69,13 @@ build {
     destination = "/tmp/webapp.zip"
   }
 
+    # Upload cloudwatch-agent-config.json
+  provisioner "file" {
+    source      = "./amazon-cloudwatch-agent.json"
+    destination = "/tmp/amazon-cloudwatch-agent.json"
+  }
+
   provisioner "shell" {
-    environment_vars = [
-      "DB_PASSWORD=${var.DB_PASSWORD}",
-      "DB_USER=${var.DB_USER}",
-      "DB_NAME=${var.DB_NAME}"
-    ]
     inline = [
       "set -ex",                       # Enable debugging and exit on error
       "sudo apt-get update -y",        # Update package list
@@ -169,9 +158,20 @@ build {
       "echo 'Final directory contents:'",
       "ls -al",
       "sudo mv /opt/csye6225/App_Test/my_fastapi_app.service /etc/systemd/system/",
+      # Install CloudWatch Agent
+      "echo 'Installing CloudWatch Agent'",
+      "wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -P /tmp",
+      "sudo dpkg -i -E /tmp/amazon-cloudwatch-agent.deb",
+# Move CloudWatch Agent config
+      "echo 'Configuring CloudWatch Agent'",
+      "sudo mv /tmp/amazon-cloudwatch-agent.json /opt/csye6225/App_Test/",
+      
+      "sudo chown -R csye6225:csye6225 /opt/csye6225/App_Test",
+      "sudo chmod 755 /opt/csye6225/App_Test",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable my_fastapi_app",
       "sudo systemctl start my_fastapi_app",
+      "sudo systemctl restart amazon-cloudwatch-agent",
       "echo 'Provisioning script completed'"
     ]
   }

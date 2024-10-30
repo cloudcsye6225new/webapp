@@ -19,7 +19,7 @@ if is_github_actions:
     DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/cloud_bd"
 
 else:
-    # Load environment variables from the ".env" file
+    # Load environment variables from the ".env" fil
         load_dotenv("app.env")
         POSTGRES_PASSWORD = os.getenv("DB_PASSWORD")
         print(POSTGRES_PASSWORD)

@@ -270,5 +270,5 @@ async def delete_profile_picture(
         return Response(status_code=204)
     except Exception as e:
         logger.error("Error deleting profile picture for user %s: %s", current_user.id, e)
-        raise HTTPException(status_code=500, detail="Error deleting profile picture.")
+        raise HTTPException(status_code=404, detail=f"Error deleting profile picture. {e}")
 

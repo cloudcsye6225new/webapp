@@ -69,7 +69,7 @@ build {
     destination = "/tmp/webapp.zip"
   }
 
-    # Upload cloudwatch-agent-config.json
+  # Upload cloudwatch-agent-config.json
   provisioner "file" {
     source      = "./amazon-cloudwatch-agent.json"
     destination = "/tmp/amazon-cloudwatch-agent.json"
@@ -162,10 +162,10 @@ build {
       "echo 'Installing CloudWatch Agent'",
       "wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -P /tmp",
       "sudo dpkg -i -E /tmp/amazon-cloudwatch-agent.deb",
-# Move CloudWatch Agent config
+      # Move CloudWatch Agent config
       "echo 'Configuring CloudWatch Agent'",
       "sudo mv /tmp/amazon-cloudwatch-agent.json /opt/csye6225/App_Test/",
-      
+
       "sudo chown -R csye6225:csye6225 /opt/csye6225/App_Test",
       "sudo chmod 755 /opt/csye6225/App_Test",
       "sudo systemctl daemon-reload",

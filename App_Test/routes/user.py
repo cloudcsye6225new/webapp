@@ -237,7 +237,7 @@ async def get_profile_picture(
 
         logger.info("Retrieved profile picture URL for user: %s", current_user.id)
         statsd.timing("api_calls.get_profile_picture.duration", (time.time() - start_time) * 1000)
-        return {"url": image_metadata.url}
+        return {"filename": image_metadata.file_name, "id":image_metadata.id, "url": image_metadata.url, "upload_date": image_metadata.upload_date, "user_id": image_metadata.user_id}
     except Exception as e:
         logger.error("Error retrieving profile picture for user %s: %s", current_user.id, e)
         raise HTTPException(status_code=500, detail="Error retrieving profile picture.")

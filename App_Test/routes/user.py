@@ -33,8 +33,7 @@ S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 SNS_TOPIC_ARN = os.getenv("SNS_TOPIC_ARN")
 
 # SNS client
-sns_client = boto3.client("sns")
-
+sns_client = boto3.client("sns", region_name="us-east-1")
 
 # Define the log directory and file path
 log_directory = os.path.join(os.getcwd(), "logs")

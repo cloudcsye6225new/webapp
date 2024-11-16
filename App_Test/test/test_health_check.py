@@ -27,16 +27,22 @@ if is_github_actions:
     POSTGRES_HOST = os.getenv("PGHOST")
     POSTGRES_DATABASE = os.getenv("TEST_DATABASE")
     DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
-else:
-    load_dotenv(".env")
-    POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
-    print(POSTGRES_PASSWORD)
-    POSTGRES_HOST = os.getenv("PGHOST")
-    POSTGRES_DATABASE=os.getenv("TEST_DATABASE")
-    
+# else:
+#     load_dotenv(".env")
+#     POSTGRES_PASSWORD = os.getenv("PGPASSWORD")
+#     POSTGRES_HOST = os.getenv("PGHOST")
+#     POSTGRES_DATABASE = os.getenv("TEST_DATABASE")
 
-    DATABASE_URL = f"postgresql://postgres:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DATABASE}"
+# # Debug environment variables
+# print(f"PGHOST: {POSTGRES_HOST}")
+# print(f"PGPASSWORD: {POSTGRES_PASSWORD}")
+# print(f"TEST_DATABASE: {POSTGRES_DATABASE}")
 
+# # Ensure environment variables are set
+# if not POSTGRES_HOST or not POSTGRES_PASSWORD or not POSTGRES_DATABASE:
+#     raise RuntimeError("One or more required environment variables are not set.")
+
+DATABASE_URL = f"postgresql://postgres:shahharsh9@localhost:5433/test"
 
 engine = create_engine(DATABASE_URL)
 

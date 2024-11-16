@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  psql:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: harsh
+      POSTGRES_PASSWORD: shahharsh9
+    ports:
+      - 5432:5432
+
+volumes:
+  psql_volume:

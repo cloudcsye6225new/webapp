@@ -1,4 +1,4 @@
-from sqlalchemy import Column, VARCHAR, DateTime, Integer, Sequence, ForeignKey
+from sqlalchemy import Column, VARCHAR, DateTime, Integer, Sequence, ForeignKey, Boolean, String
 from datetime import datetime
 from database import Base
 import uuid
@@ -17,6 +17,9 @@ class User(Base):
     password = Column(VARCHAR, index=True)
     account_created = Column(DateTime, nullable=False, default=datetime.utcnow)
     account_updated = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_verified = Column(Boolean, default=False, nullable=False) 
+    token = Column(String, nullable=False, unique=True)
+    expires_at = Column(DateTime, nullable=False)
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}')>"

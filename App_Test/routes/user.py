@@ -33,7 +33,7 @@ S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 SNS_TOPIC_ARN = os.getenv("SNS_TOPIC_ARN")
 
 # SNS client
-sns_client = boto3.client("sns", region_name="us-east-1")
+sns_client = boto3.client("sns", region_name=os.getenv("region"))
 
 # Define the log directory and file path
 log_directory = os.path.join(os.getcwd(), "logs")
@@ -54,6 +54,8 @@ statsd = StatsClient(host='localhost', port=8125)
 
 userRouter = APIRouter()
 models.Base.metadata.create_all(bind=engine)
+
+@userRouter.get('v1/verified', status= status.HTTP_200_OK)
 
 @userRouter.post('/v1/user', status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
 def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
@@ -85,9 +87,14 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
         statsd.timing("database.create_user_query.duration", (time.time() - db_start_time) * 1000)
 
         # Publish to SNS topic
+        #Add token, timestamp for expiry
         payload = {
             "user_id": user_model.id,
-            "email": user_model.email
+            "email": user_model.email,
+            "token": user_model.token,
+            "expires_at": user_model.expires_at,
+            "is_verified": user_model.is_verified
+
         }
         sns_response = sns_client.publish(
             TopicArn=SNS_TOPIC_ARN,

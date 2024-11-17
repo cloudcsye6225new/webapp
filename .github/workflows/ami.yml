@@ -16,7 +16,7 @@ jobs:
       PGPASSWORD: ${{ secrets.PGPASSWORD }}
       PGDATABASE: ${{ secrets.PGDATABASE }}
       TEST_DATABASE: ${{ secrets.TEST_DATABASE }}
-
+      Region: ${{secrets.REGION}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -100,13 +100,12 @@ jobs:
         with:
           name: webapp zip creation
           path: webapp.zip
-          
+
       - name: Moving Zip to APP_TEST
         run: |
           ls
           pwd
           sudo mv /home/runner/work/webapp/webapp/webapp.zip /home/runner/work/webapp/webapp/App_Test/
-          
 
       - name: Run Packer
         run: |

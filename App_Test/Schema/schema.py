@@ -19,6 +19,9 @@ class UserOut(BaseModel):
     email: str
     account_created: datetime
     account_updated: datetime
+    is_verified: bool
+    token: str
+    expires_at: datetime
     
 class UserCredentials(BaseModel):
     first_name: str

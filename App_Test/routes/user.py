@@ -113,7 +113,7 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
         return user_model
     except Exception as e:
         logger.error("User creation failed due to an exception: %s", e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="User creation failed")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"User creation failed. This is the exceptional error {e}")
     finally:
         db.close()
         statsd.timing("api_calls.create_user.duration", (time.time() - start_time) * 1000)  # Record API duration

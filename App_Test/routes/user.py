@@ -59,7 +59,7 @@ statsd = StatsClient(host='localhost', port=8125)
 userRouter = APIRouter()
 models.Base.metadata.create_all(bind=engine)
 
-@userRouter.get('v1/verified', status= status.HTTP_200_OK)
+# @userRouter.get('v1/verified', status= status.HTTP_200_OK)
 
 @userRouter.post('/v1/user', status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
 def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):

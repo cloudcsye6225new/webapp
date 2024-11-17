@@ -32,8 +32,12 @@ S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
 SNS_TOPIC_ARN = os.getenv("SNS_TOPIC_ARN")
 
+is_github_actions= os.getenv("CI") == "true"
 # SNS client
-sns_client = boto3.client("sns", region_name=os.getenv("Region"))
+if is_github_actions:
+    Region = os.getenv("Region")
+    print(Region)
+    sns_client = boto3.client("sns", region_name=os.getenv("Region"))
 
 # Define the log directory and file path
 log_directory = os.path.join(os.getcwd(), "logs")

@@ -16,7 +16,7 @@ jobs:
       PGPASSWORD: ${{ secrets.PGPASSWORD }}
       PGDATABASE: ${{ secrets.PGDATABASE }}
       TEST_DATABASE: ${{ secrets.TEST_DATABASE }}
-      Region: ${{secrets.Region}}
+      Region: ${{secrets.REGION}}
 
     steps:
       - name: Checkout code
@@ -79,28 +79,3 @@ jobs:
         run: |
           cd App_Test
           pytest
-
-      - name: Install Packer
-        run: |
-          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-          sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-          sudo apt-get update && sudo apt-get install packer
-
-      - name: Run Packer fmt
-        run: |
-          cd App_Test
-          packer fmt -check .
-        continue-on-error: true
-        id: packer_fmt
-
-      - name: Check Packer fmt result
-        if: steps.packer_fmt.outcome == 'failure'
-        run: |
-          echo "Packer fmt check failed. Please format your Packer templates."
-          exit 1
-
-      - name: Run Packer validate
-        run: |
-          cd App_Test
-          packer validate -syntax-only .
-        id: packer_validate

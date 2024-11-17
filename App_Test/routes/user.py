@@ -38,6 +38,8 @@ if is_github_actions:
     Region = os.getenv("Region")
     print(Region)
     sns_client = boto3.client("sns", region_name=os.getenv("Region"))
+else:
+    sns_client = boto3.client("sns", region_name=os.getenv("Region"))
 
 # Define the log directory and file path
 log_directory = os.path.join(os.getcwd(), "logs")
@@ -111,7 +113,7 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
         return user_model
     except Exception as e:
         logger.error("User creation failed due to an exception: %s", e)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User creation failed")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="User creation failed")
     finally:
         db.close()
         statsd.timing("api_calls.create_user.duration", (time.time() - start_time) * 1000)  # Record API duration

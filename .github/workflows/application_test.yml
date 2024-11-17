@@ -2,13 +2,12 @@ name: Application_Test
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     name: pr-check
     runs-on: ubuntu-latest
-    
 
     env:
       PGHOST: ${{ secrets.PGHOST }}
@@ -17,7 +16,7 @@ jobs:
       PGPASSWORD: ${{ secrets.PGPASSWORD }}
       PGDATABASE: ${{ secrets.PGDATABASE }}
       TEST_DATABASE: ${{ secrets.TEST_DATABASE }}
-
+      Region: ${{secrets.Region}}
 
     steps:
       - name: Checkout code
@@ -54,27 +53,27 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.x" # Replace with your desired Python version
-      
+
       - name: changing directory
         run: |
           pwd
           ls
           cd App_Test
           ls
-          pip install -r requirements.txt  
-     
+          pip install -r requirements.txt
+
       - name: install psycopg2
         run: |
           sudo apt install libpq-dev
           pip install psycopg2-binary
           # Install uvicorn
           pip install uvicorn
-     
+
       - name: Run FastAPI application
         run: |
-            pwd
-            cd App_Test
-            uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
+          pwd
+          cd App_Test
+          uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
 
       - name: Wait for FastAPI to start
         run: |

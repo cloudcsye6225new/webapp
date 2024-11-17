@@ -60,37 +60,4 @@ def test_healthcheck():
     if response.status_code == status.HTTP_200_OK:
         assert response.status_code == status.HTTP_200_OK
 
-# def test_create_user():
-#     response = client.post(
-#         "/v1/user",
-#         json={
-#             "first_name": "John",
-#             "last_name": "Doe",
-#             "email": "john.doe@example.com",
-#             "password": "password123"
-#         }
-#     )
-#     if response.status_code == status.HTTP_201_CREATED:
-#         assert response.status_code == status.HTTP_201_CREATED
-#     else:
-#         assert response.status_code == 400 
-#     # assert response.json()["email"] == "john.doe@example.com"
 
-# # def test_get_user():
-# #     response = client.get("/users/get_user")
-# #     assert response.status_code == status.HTTP_200_OK
-# #     assert response.json()["email"] == "john.doe@example.com"
-
-# def get_basic_auth_header(username, password):
-#     credentials = f"{username}:{password}"
-#     encoded_credentials = base64.b64encode(credentials.encode("ascii")).decode("ascii")
-#     return f"Basic {encoded_credentials}"
-
-# def test_get_user():
-#     auth_header = get_basic_auth_header("john.doe@example.com", "password123")
-#     response = client.get(
-#         "/v1/user/self",
-#         headers={"Authorization": auth_header}
-#     )
-#     assert response.status_code == status.HTTP_200_OK
-#     assert response.json()["email"] == "john.doe@example.com"

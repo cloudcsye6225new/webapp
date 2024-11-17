@@ -17,6 +17,7 @@ import os
 
 from PIL import Image
 import boto3
+import json
 
 from io import BytesIO
 
@@ -29,6 +30,14 @@ s3_client = boto3.client("s3")
 # Define S3 bucket name (environment variable should be set by user_data or .env file)
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
+SNS_TOPIC_ARN = os.getenv("SNS_TOPIC_ARN")
+
+is_github_actions= os.getenv("CI") == "true"
+# SNS client
+if is_github_actions:
+    Region = os.getenv("Region")
+    print(Region)
+    sns_client = boto3.client("sns", region_name=os.getenv("Region"))
 
 # Define the log directory and file path
 log_directory = os.path.join(os.getcwd(), "logs")
@@ -49,6 +58,8 @@ statsd = StatsClient(host='localhost', port=8125)
 
 userRouter = APIRouter()
 models.Base.metadata.create_all(bind=engine)
+
+# @userRouter.get('v1/verified', status= status.HTTP_200_OK)
 
 @userRouter.post('/v1/user', status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
 def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
@@ -72,12 +83,29 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
             password=password_hash.decode('utf-8'),
         )
         
-        # Timing database query
+        # Save user to the database
         db_start_time = time.time()
         db.add(user_model)
         db.commit()
         db.refresh(user_model)
         statsd.timing("database.create_user_query.duration", (time.time() - db_start_time) * 1000)
+
+        # Publish to SNS topic
+        #Add token, timestamp for expiry
+        payload = {
+            "user_id": user_model.id,
+            "email": user_model.email,
+            "token": user_model.token,
+            "expires_at": user_model.expires_at,
+            "is_verified": user_model.is_verified
+
+        }
+        sns_response = sns_client.publish(
+            TopicArn=SNS_TOPIC_ARN,
+            Message=json.dumps(payload),
+            Subject="New User Created"
+        )
+        logger.info("Published message to SNS: %s", sns_response)
 
         logger.info("User created successfully with email: %s", user.email)
         return user_model
@@ -271,4 +299,3 @@ async def delete_profile_picture(
     except Exception as e:
         logger.error("Error deleting profile picture for user %s: %s", current_user.id, e)
         raise HTTPException(status_code=404, detail=f"Error deleting profile picture. {e}")
-

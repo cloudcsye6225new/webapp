@@ -1,11 +1,16 @@
-from sqlalchemy import Column, VARCHAR, DateTime, Integer, Sequence, ForeignKey
-from datetime import datetime
+from sqlalchemy import Column, VARCHAR, DateTime, Integer, Sequence, ForeignKey, Boolean, String
+from datetime import datetime, timedelta
 from database import Base
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
+import secrets
 
 # Define a sequence for the id column
 user_id_seq = Sequence('user_id_seq')
+
+def generate_token():
+    """Generates a secure random token."""
+    return secrets.token_urlsafe(32) 
 
 class User(Base):
     __tablename__ = 'users'
@@ -17,6 +22,9 @@ class User(Base):
     password = Column(VARCHAR, index=True)
     account_created = Column(DateTime, nullable=False, default=datetime.utcnow)
     account_updated = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_verified = Column(Boolean, default=False, nullable=False) 
+    token = Column(String, nullable=False, unique=True, default=generate_token)
+    expires_at = Column(DateTime, nullable=False, default=lambda: datetime.utcnow() + timedelta(minutes=2))
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}')>"

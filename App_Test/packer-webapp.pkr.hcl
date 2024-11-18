@@ -175,10 +175,9 @@ build {
       "echo 'Provisioning script completed'"
     ]
   }
-}
-
-post-processors {
-  output {
-    path = "ami-output.txt" # Save the generated AMI ID to a file
+  post-processor "manifest" {
+    output = "ami-output.txt"
   }
 }
+
+

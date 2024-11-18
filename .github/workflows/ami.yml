@@ -127,28 +127,31 @@ jobs:
           cd App_Test
           packer init packer-webapp.pkr.hcl
 
-           NEW_AMI_ID=$(packer build -machine-readable -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+          packer build -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
              -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
              -var "aws_region=${{ secrets.AWS_REGION }}" \
              -var "ami_name_prefix=${{ secrets.AMI_NAME_PREFIX }}" \
              -var "source_ami=${{ secrets.SOURCE_AMI }}" \
              -var "instance_type=${{ secrets.INSTANCE_TYPE }}" \
              -var "ssh_username=${{ secrets.SSH_USERNAME }}" \
-             packer-webapp.pkr.hcl | grep 'artifact,0,id' | cut -d, -f6)
+             packer-webapp.pkr.hcl
 
-          echo "NEW_AMI_ID=$NEW_AMI_ID" >> $GITHUB_ENV
-          echo "Built AMI ID: $NEW_AMI_ID"
+      - name: Extract AMI ID from Manifest
+        run: |
+          AMI_ID=$(jq -r '.builds[0].artifact_id' App_Test/ami-output.txt | cut -d':' -f2)
+          echo "NEW_AMI_ID=$AMI_ID" >> $GITHUB_ENV
+          echo "Extracted AMI ID: $AMI_ID"
 
-          - name: Update Launch Template with New AMI
-          run: |
-            aws ec2 create-launch-template-version \
-              --launch-template-name "webapp-launch-template" \
-              --source-version "$Latest" \
-              --launch-template-data "{\"ImageId\":\"$NEW_AMI_ID\"}"
+      - name: Update Launch Template with New AMI
+        run: |
+          aws ec2 create-launch-template-version \
+            --launch-template-name "webapp-launch-template" \
+            --source-version "$Latest" \
+            --launch-template-data "{\"ImageId\":\"$NEW_AMI_ID\"}"
 
-            aws ec2 modify-launch-template \
-              --launch-template-name "webapp-launch-template" \
-              --default-version "$Latest"
+          aws ec2 modify-launch-template \
+            --launch-template-name "webapp-launch-template" \
+            --default-version "$Latest"
 
       - name: Start Instance Refresh
         run: |

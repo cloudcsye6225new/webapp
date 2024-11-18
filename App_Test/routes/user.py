@@ -39,7 +39,8 @@ if is_github_actions:
     print(Region)
     sns_client = boto3.client("sns", region_name=os.getenv("Region"))
 else:
-    sns_client = boto3.client("sns", region_name=os.getenv("Region"))
+    region=os.getenv("Region")
+    sns_client = boto3.client("sns", region_name=region)
 
 # Define the log directory and file path
 log_directory = os.path.join(os.getcwd(), "logs")

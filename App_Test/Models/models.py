@@ -25,13 +25,8 @@ class User(Base):
     account_updated = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_verified = Column(Boolean, default=False, nullable=False) 
     token = Column(String, nullable=False, unique=True, default=generate_token)
-    expires_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: Column(DateTime, nullable=False, default=datetime.utcnow)
 
-    class Config:
-        orm_mode = True  # If using an ORM like SQLAlchemy
-        json_encoders = {
-            datetime: lambda v: v.isoformat()  # Serialize datetime to ISO8601 string
-        }
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}')>"

@@ -22,11 +22,6 @@ class UserOut(BaseModel):
     is_verified: bool
     token: str
     expires_at: datetime
-
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()  # Converts datetime to ISO 8601 string
-        }
     
 class UserCredentials(BaseModel):
     first_name: str

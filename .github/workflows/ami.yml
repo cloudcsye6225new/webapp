@@ -178,7 +178,7 @@ jobs:
          # Monitor the status of the refresh
           # Start the instance refresh
             REFRESH_ID=$(aws autoscaling start-instance-refresh \
-              --auto-scaling-group-name "${{ secrets.ASG_NAME }}" \
+              --auto-scaling-group-name "custom_autoscaling_group" \
               --preferences '{"MinHealthyPercentage": 100}' \
               --query "InstanceRefreshId" \
               --output text)

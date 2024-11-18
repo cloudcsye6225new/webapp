@@ -147,7 +147,7 @@ jobs:
               # Create a new launch template version with the updated AMI
                   VERSION_NUMBER=$(aws ec2 create-launch-template-version \
                       --launch-template-name "webapp-launch-template" \
-                      --launch-template-data "{\"ImageId\":\"$NEW_AMI_ID\"}" \
+                      --launch-template-data "{\"ImageId\":\"$NEW_AMI_ID\", \"InstanceType\":\"t2.micro\"}" \
                       --query "LaunchTemplateVersion.VersionNumber" \
                       --output text)
 

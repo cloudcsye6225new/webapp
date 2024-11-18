@@ -17,9 +17,18 @@ jobs:
       PGDATABASE: ${{ secrets.PGDATABASE }}
       TEST_DATABASE: ${{ secrets.TEST_DATABASE }}
       Region: ${{secrets.REGION}}
+      NEW_AMI_ID: "" # This will store the new AMI ID created by Packer
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install PostgreSQL
         run: |
@@ -118,11 +127,50 @@ jobs:
           cd App_Test
           packer init packer-webapp.pkr.hcl
 
-          packer build -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+           NEW_AMI_ID=$(packer build -machine-readable -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
              -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
              -var "aws_region=${{ secrets.AWS_REGION }}" \
              -var "ami_name_prefix=${{ secrets.AMI_NAME_PREFIX }}" \
              -var "source_ami=${{ secrets.SOURCE_AMI }}" \
              -var "instance_type=${{ secrets.INSTANCE_TYPE }}" \
              -var "ssh_username=${{ secrets.SSH_USERNAME }}" \
-             packer-webapp.pkr.hcl
+             packer-webapp.pkr.hcl | grep 'artifact,0,id' | cut -d, -f6)
+
+          echo "NEW_AMI_ID=$NEW_AMI_ID" >> $GITHUB_ENV
+          echo "Built AMI ID: $NEW_AMI_ID"
+
+          - name: Update Launch Template with New AMI
+          run: |
+            aws ec2 create-launch-template-version \
+              --launch-template-name "webapp-launch-template" \
+              --source-version "$Latest" \
+              --launch-template-data "{\"ImageId\":\"$NEW_AMI_ID\"}"
+
+            aws ec2 modify-launch-template \
+              --launch-template-name "webapp-launch-template" \
+              --default-version "$Latest"
+
+      - name: Start Instance Refresh
+        run: |
+          REFRESH_ID=$(aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name "custom_autoscaling_group" \
+            --preferences '{"MinHealthyPercentage": 100}' \
+            --query "InstanceRefreshId" --output text)
+          echo "Instance Refresh ID: $REFRESH_ID"
+
+      - name: Monitor Instance Refresh
+        run: |
+          STATUS=""
+          while [[ "$STATUS" != "Successful" && "$STATUS" != "Cancelled" && "$STATUS" != "Failed" ]]; do
+            sleep 30
+            STATUS=$(aws autoscaling describe-instance-refreshes \
+              --auto-scaling-group-name "custom_autoscaling_group" \
+              --query "InstanceRefreshes[?InstanceRefreshId=='$REFRESH_ID'].Status" \
+              --output text)
+            echo "Current Refresh Status: $STATUS"
+          done
+
+          if [ "$STATUS" != "Successful" ]; then
+            echo "Instance Refresh failed with status: $STATUS"
+            exit 1
+          fi

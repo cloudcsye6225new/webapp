@@ -175,17 +175,23 @@ jobs:
 
       - name: Monitor Instance Refresh
         run: |
-          STATUS=""
-          while [[ "$STATUS" != "Successful" && "$STATUS" != "Cancelled" && "$STATUS" != "Failed" ]]; do
-            sleep 30
+         # Monitor the status of the refresh
+          while true; do
             STATUS=$(aws autoscaling describe-instance-refreshes \
-              --auto-scaling-group-name "custom_autoscaling_group" \
+              --auto-scaling-group-name "${{ secrets.ASG_NAME }}" \
               --query "InstanceRefreshes[?InstanceRefreshId=='$REFRESH_ID'].Status" \
               --output text)
-            echo "Current Refresh Status: $STATUS"
-          done
 
-          if [ "$STATUS" != "Successful" ]; then
-            echo "Instance Refresh failed with status: $STATUS"
-            exit 1
-          fi
+            echo "Current refresh status: $STATUS"
+
+            if [[ "$STATUS" == "Successful" ]]; then
+              echo "Instance refresh completed successfully."
+              break
+            elif [[ "$STATUS" == "Failed" || "$STATUS" == "Cancelled" ]]; then
+              echo "Instance refresh failed or was cancelled."
+              exit 1
+            else
+              echo "Instance refresh in progress. Checking again in 30 seconds..."
+              sleep 30
+            fi
+          done

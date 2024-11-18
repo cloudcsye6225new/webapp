@@ -144,14 +144,26 @@ jobs:
 
       - name: Update Launch Template with New AMI
         run: |
-          aws ec2 create-launch-template-version \
-            --launch-template-name "webapp-launch-template" \
-            --source-version "$Latest" \
-            --launch-template-data "{\"ImageId\":\"$NEW_AMI_ID\"}"
+              # Create a new launch template version with the updated AMI
+                  VERSION_NUMBER=$(aws ec2 create-launch-template-version \
+                      --launch-template-name "webapp-launch-template" \
+                      --launch-template-data "{\"ImageId\":\"$NEW_AMI_ID\"}" \
+                      --query "LaunchTemplateVersion.VersionNumber" \
+                      --output text)
 
-          aws ec2 modify-launch-template \
-            --launch-template-name "webapp-launch-template" \
-            --default-version "$Latest"
+                  if [ -z "$VERSION_NUMBER" ]; then
+                    echo "Error: Failed to retrieve the new Launch Template version number."
+                    exit 1
+                  fi
+              
+                  echo "New Launch Template Version: $VERSION_NUMBER"
+              
+                  # Set the newly created version as the default
+                  aws ec2 modify-launch-template \
+                    --launch-template-name "webapp-launch-template" \
+                    --default-version "$VERSION_NUMBER"
+              
+                  echo "Successfully set the default Launch Template version to: $VERSION_NUMBER"
 
       - name: Start Instance Refresh
         run: |

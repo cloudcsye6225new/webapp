@@ -97,10 +97,8 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
         payload = {
             "user_id": user_model.id,
             "email": user_model.email,
-            "token": user_model.token,
-            "expires_at": user_model.expires_at,
-            "is_verified": user_model.is_verified
-
+            "token": user_model.token
+           
         }
         sns_response = sns_client.publish(
             TopicArn=SNS_TOPIC_ARN,

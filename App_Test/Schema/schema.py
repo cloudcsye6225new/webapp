@@ -13,7 +13,7 @@ class UserPostOut(BaseModel):
     last_name: str
     email: str
 class UserOut(BaseModel):
-    id : int
+    id: int
     first_name: str
     last_name: str
     email: str
@@ -22,6 +22,9 @@ class UserOut(BaseModel):
     is_verified: bool
     token: str
     expires_at: datetime
+
+    class Config:
+        orm_mode = True
     
 class UserCredentials(BaseModel):
     first_name: str

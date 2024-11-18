@@ -23,9 +23,10 @@ class User(Base):
     password = Column(VARCHAR, index=True)
     account_created = Column(DateTime, nullable=False, default=datetime.utcnow)
     account_updated = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    is_verified = Column(Boolean, default=False, nullable=False) 
+    is_verified = Column(Boolean, default=False, nullable=False)
     token = Column(String, nullable=False, unique=True, default=generate_token)
     expires_at: Column(DateTime, nullable=False, default=datetime.utcnow)
+
 
 
     def __repr__(self):

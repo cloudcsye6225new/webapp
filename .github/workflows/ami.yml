@@ -168,25 +168,33 @@ jobs:
 
       - name: Monitor Instance Refresh
         run: |
-         # Monitor the status of the refresh
           # Start the instance refresh
-            REFRESH_ID=$(aws autoscaling start-instance-refresh \
+          REFRESH_ID=$(aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name "custom_autoscaling_group" \
+            --preferences '{"MinHealthyPercentage": 100}' \
+            --query "InstanceRefreshId" \
+            --output text)
+
+          echo "Started instance refresh with ID: $REFRESH_ID"
+
+          # Wait for the instance refresh to complete
+          while true; do
+            STATUS=$(aws autoscaling describe-instance-refreshes \
               --auto-scaling-group-name "custom_autoscaling_group" \
-              --preferences '{"MinHealthyPercentage": 100}' \
-              --query "InstanceRefreshId" \
+              --query "InstanceRefreshes[?InstanceRefreshId=='$REFRESH_ID'].Status" \
               --output text)
-            
-            echo "Started instance refresh with ID: $REFRESH_ID"
-            
-            # Wait for the instance refresh to complete
-            if [["$REFRESHID" == "Successful" ]]; then 
-              echo "instance refresh completed succesfully."
+
+            echo "Current instance refresh status: $STATUS"
+
+            if [ "$STATUS" == "Successful" ]; then
+              echo "Instance refresh completed successfully."
               exit 0
-            elif [["$REFRESHID" == "Failed" || "$REFRESHID" == "Cancelled" ]]; then
-              echo "instance refresh failed or was cancelled"
+            elif [ "$STATUS" == "Failed" ] || [ "$STATUS" == "Cancelled" ]; then
+              echo "Instance refresh failed or was cancelled."
               exit 1
-            else 
-              echo "checking again in 30s"
+            else
+              echo "Checking again in 30 seconds..."
               sleep 30
             fi
           done
+

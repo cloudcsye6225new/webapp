@@ -25,7 +25,7 @@ class User(Base):
     account_updated = Column(DateTime, nullable=False, default=datetime.utcnow(), onupdate=datetime.utcnow())
     is_verified = Column(Boolean, default=False, nullable=False)
     token = Column(String, nullable=False, unique=True, default=generate_token())
-    expires_at = Column(DateTime, nullable=True)  # Make expires_at nullable
+    expires_at = Column(DateTime, nullable=False, default=datetime.utcnow() + timedelta(minutes=2) )
 
 
 

@@ -176,3 +176,9 @@ build {
     ]
   }
 }
+
+post-processors {
+  output {
+    path = "ami-output.txt" # Save the generated AMI ID to a file
+  }
+}

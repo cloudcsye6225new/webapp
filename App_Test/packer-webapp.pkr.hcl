@@ -175,4 +175,9 @@ build {
       "echo 'Provisioning script completed'"
     ]
   }
+  post-processor "manifest" {
+    output = "ami-output.txt"
+  }
 }
+
+

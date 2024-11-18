@@ -176,22 +176,20 @@ jobs:
       - name: Monitor Instance Refresh
         run: |
          # Monitor the status of the refresh
-          while true; do
-            STATUS=$(aws autoscaling describe-instance-refreshes \
+          # Start the instance refresh
+            REFRESH_ID=$(aws autoscaling start-instance-refresh \
               --auto-scaling-group-name "${{ secrets.ASG_NAME }}" \
-              --query "InstanceRefreshes[?InstanceRefreshId=='$REFRESH_ID'].Status" \
+              --preferences '{"MinHealthyPercentage": 100}' \
+              --query "InstanceRefreshId" \
               --output text)
+            
+            echo "Started instance refresh with ID: $REFRESH_ID"
+            
+            # Wait for the instance refresh to complete
+            aws autoscaling wait instance-refresh-completed \
+              --auto-scaling-group-name "${{ secrets.ASG_NAME }}" \
+              --instance-refresh-ids "$REFRESH_ID"
+            
+            # If the wait command succeeds
+            echo "Instance refresh completed successfully."
 
-            echo "Current refresh status: $STATUS"
-
-            if [[ "$STATUS" == "Successful" ]]; then
-              echo "Instance refresh completed successfully."
-              break
-            elif [[ "$STATUS" == "Failed" || "$STATUS" == "Cancelled" ]]; then
-              echo "Instance refresh failed or was cancelled."
-              exit 1
-            else
-              echo "Instance refresh in progress. Checking again in 30 seconds..."
-              sleep 30
-            fi
-          done

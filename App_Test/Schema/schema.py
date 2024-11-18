@@ -13,7 +13,7 @@ class UserPostOut(BaseModel):
     last_name: str
     email: str
 class UserOut(BaseModel):
-    id : int
+    id: int
     first_name: str
     last_name: str
     email: str
@@ -24,9 +24,7 @@ class UserOut(BaseModel):
     expires_at: datetime
 
     class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()  # Converts datetime to ISO 8601 string
-        }
+        orm_mode = True
     
 class UserCredentials(BaseModel):
     first_name: str

@@ -21,11 +21,11 @@ class User(Base):
     last_name = Column(VARCHAR, index=True)
     email = Column(VARCHAR, index=True)
     password = Column(VARCHAR, index=True)
-    account_created = Column(DateTime, nullable=False, default=datetime.utcnow)
-    account_updated = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    account_created = Column(DateTime, nullable=False, default=datetime.utcnow())
+    account_updated = Column(DateTime, nullable=False, default=datetime.utcnow(), onupdate=datetime.utcnow())
     is_verified = Column(Boolean, default=False, nullable=False)
-    token = Column(String, nullable=False, unique=True, default=generate_token)
-    expires_at: Column(DateTime, nullable=False, default=datetime.utcnow)
+    token = Column(String, nullable=False, unique=True, default=generate_token())
+    expires_at = Column(DateTime, nullable=True)  # Make expires_at nullable
 
 
 

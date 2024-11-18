@@ -165,13 +165,6 @@ jobs:
               
                   echo "Successfully set the default Launch Template version to: $VERSION_NUMBER"
 
-      - name: Start Instance Refresh
-        run: |
-          REFRESH_ID=$(aws autoscaling start-instance-refresh \
-            --auto-scaling-group-name "custom_autoscaling_group" \
-            --preferences '{"MinHealthyPercentage": 100}' \
-            --query "InstanceRefreshId" --output text)
-          echo "Instance Refresh ID: $REFRESH_ID"
 
       - name: Monitor Instance Refresh
         run: |
@@ -186,10 +179,14 @@ jobs:
             echo "Started instance refresh with ID: $REFRESH_ID"
             
             # Wait for the instance refresh to complete
-            aws autoscaling wait instance-refresh-completed \
-              --auto-scaling-group-name "${{ secrets.ASG_NAME }}" \
-              --instance-refresh-ids "$REFRESH_ID"
-            
-            # If the wait command succeeds
-            echo "Instance refresh completed successfully."
-
+            if [["$REFRESHID" == "Successful" ]]; then 
+              echo "instance refresh completed succesfully."
+              exit 0
+            elif [["$REFRESHID" == "Failed" || "$REFRESHID" == "Cancelled" ]]; then
+              echo "instance refresh failed or was cancelled"
+              exit 1
+            else 
+              echo "checking again in 30s"
+              sleep 30
+            fi
+          done

@@ -11,8 +11,9 @@ user_id_seq = Sequence('user_id_seq')
 
 def generate_token():
     """Generates a secure random token."""
-    return secrets.token_urlsafe(32) 
-
+    return secrets.token_urlsafe(32)
+def generate_expiry_time():
+    return datetime.utcnow() + timedelta(minutes=2)
 class User(Base):
     __tablename__ = 'users'
 
@@ -25,9 +26,7 @@ class User(Base):
     account_updated = Column(DateTime, nullable=False, default=datetime.utcnow(), onupdate=datetime.utcnow())
     is_verified = Column(Boolean, default=False, nullable=False)
     token = Column(String, nullable=False, unique=True, default=generate_token)
-    expires_at = Column(DateTime, nullable=False, default=datetime.utcnow() + timedelta(minutes=2) )
-
-
+    expires_at = Column(DateTime, nullable=False, default= generate_expiry_time)
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}')>"

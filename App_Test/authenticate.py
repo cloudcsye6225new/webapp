@@ -24,12 +24,11 @@ def get_authenticated_user(credentials: HTTPBasicCredentials = Depends(security)
             detail="Wrong credentials",
         )
 
-    # Check email verification status
-    email_verification = db.query(models.EmailVerification).filter_by(user_id=user.id).first()
-    if not email_verification or email_verification.is_verified is False:
+      # Check if the user is verified
+    if not user.is_verified:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,  # Return 403 Forbidden
-            detail="Email verification required. Complete the email verification process."
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Email verification required. Complete the email verification process.",
         )
 
     return user

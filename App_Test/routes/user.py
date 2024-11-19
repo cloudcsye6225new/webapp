@@ -367,7 +367,6 @@ def verify_user(user: str, token: str, db: Session = Depends(get_db)):
 
         # Mark the user as verified if token is valid
         db_user.is_verified = True
-        db_user.token = "VERIFIED"  # Clear the token for security
         db_user.account_updated = datetime.utcnow()
         db.commit()
 

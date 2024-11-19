@@ -300,3 +300,85 @@ async def delete_profile_picture(
     except Exception as e:
         logger.error("Error deleting profile picture for user %s: %s", current_user.id, e)
         raise HTTPException(status_code=404, detail=f"Error deleting profile picture. {e}")
+
+
+
+############################ verify the user endpoint #################################################
+import json
+import secrets
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from database import get_db
+from datetime import datetime, timedelta
+from Models.models import User
+import boto3
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Create an SNS client
+sns_client = boto3.client("sns", region_name=os.getenv("Region"))
+SNS_TOPIC_ARN = os.getenv("SNS_TOPIC_ARN")
+DOMAIN = os.getenv("DOMAIN")  # Ensure DOMAIN is set in your environment
+
+@userRouter.get("/verify", status_code=status.HTTP_200_OK)
+def verify_user(user: str, token: str, db: Session = Depends(get_db)):
+    """
+    Endpoint to verify a user's email address using a token.
+    Resends a new verification link if the token is expired.
+    """
+    try:
+        # Retrieve the user from the database
+        db_user = db.query(User).filter(User.email == user, User.token == token).first()
+
+        if not db_user:
+            logger.warning("Verification failed - Invalid user or token: user=%s, token=%s", user, token)
+            raise HTTPException(status_code=400, detail="Invalid verification link or user.")
+
+        # Check if the token has expired
+        if db_user.expires_at < datetime.utcnow():
+            logger.warning("Verification failed - Token expired for user: %s", user)
+
+            # Generate a new token and set a new expiry time
+            new_token = secrets.token_urlsafe(32)
+            db_user.token = new_token
+            db_user.expires_at = datetime.utcnow() + timedelta(minutes=2)
+            db.commit()
+
+            logger.info("Generated new token for user: %s", user)
+
+            # Trigger SNS to resend the verification email
+            payload = {
+                "user_id": db_user.id,
+                "email": db_user.email,
+                "token": new_token,
+            }
+
+            sns_response = sns_client.publish(
+                TopicArn=SNS_TOPIC_ARN,
+                Message=json.dumps(payload),
+                Subject="Resend Verification Email"
+            )
+            logger.info("SNS trigger response: %s", sns_response)
+
+            return {
+                "message": "Verification link has expired. A new verification email has been sent.",
+            }
+
+        # Mark the user as verified if token is valid
+        db_user.is_verified = True
+        db_user.token = "VERIFIED"  # Clear the token for security
+        db_user.account_updated = datetime.utcnow()
+        db.commit()
+
+        logger.info("User verified successfully: %s", user)
+        return {"message": "Email verified successfully."}
+
+    except Exception as e:
+        logger.error("Error during email verification for user=%s, token=%s: %s", user, token, e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred during verification."
+        )
+    finally:
+        db.close()

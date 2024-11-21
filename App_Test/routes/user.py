@@ -334,6 +334,9 @@ def verify_user(user: str, token: str, db: Session = Depends(get_db)):
         if not db_user:
             logger.warning("Verification failed - Invalid user or token: user=%s, token=%s", user, token)
             raise HTTPException(status_code=400, detail="Invalid verification link or user.")
+        if db_user.is_verified:
+            logger.info("User already verified: %s", user)
+            return {"message": "User is already verified."}
 
         # Check if the token has expired
         if db_user.expires_at < datetime.utcnow():

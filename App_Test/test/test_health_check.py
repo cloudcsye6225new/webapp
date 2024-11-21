@@ -56,7 +56,7 @@ app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
 def test_healthcheck():
-    response = client.get("/healthz")
+    response = client.get("/cicd")
     if response.status_code == status.HTTP_200_OK:
         assert response.status_code == status.HTTP_200_OK
 

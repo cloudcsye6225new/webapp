@@ -361,6 +361,8 @@ def verify_user(user: str, token: str, db: Session = Depends(get_db)):
                 "user_id": db_user.id,
                 "email": db_user.email,
                 "token": new_token,
+                "Region": os.getenv("Region"),
+                "secret_name": os.getenv("secret_name")
             }
 
             sns_response = sns_client.publish(

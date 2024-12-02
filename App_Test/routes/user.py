@@ -104,7 +104,7 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
         payload = {
             "user_id": user_model.id,
             "email": user_model.email,
-            "Region": os.getenv("Region")
+            "Region": os.getenv("Region"),
             "secret_name": os.getenv("secret_name")
            
         }

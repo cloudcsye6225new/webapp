@@ -15,6 +15,9 @@ import time
 from statsd import StatsClient
 import os
 
+
+from dotenv import load_dotenv
+
 from PIL import Image
 import boto3
 import json
@@ -27,6 +30,9 @@ from Models.models import User, ImageMetadata
 # Set up S3 client using instance IAM role
 s3_client = boto3.client("s3")
 
+
+
+load_dotenv("app.env")
 # Define S3 bucket name (environment variable should be set by user_data or .env file)
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
@@ -98,7 +104,8 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
         payload = {
             "user_id": user_model.id,
             "email": user_model.email,
-            "token": user_model.token
+            "Region": os.getenv("Region"),
+            "secret_name": os.getenv("secret_name")
            
         }
         sns_response = sns_client.publish(

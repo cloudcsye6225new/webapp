@@ -104,6 +104,7 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
             "email": user_model.email,
             "Region": os.getenv("Region"),
             "secret_name": os.getenv("secret_name")
+            "token": user_model.token
            
         }
         sns_response = sns_client.publish(

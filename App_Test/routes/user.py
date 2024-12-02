@@ -16,7 +16,7 @@ from statsd import StatsClient
 import os
 
 
-from dotenv import load_dotenv
+
 
 from PIL import Image
 import boto3
@@ -31,8 +31,6 @@ from Models.models import User, ImageMetadata
 s3_client = boto3.client("s3")
 
 
-
-load_dotenv("app.env")
 # Define S3 bucket name (environment variable should be set by user_data or .env file)
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 

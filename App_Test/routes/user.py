@@ -103,7 +103,7 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
             "user_id": user_model.id,
             "email": user_model.email,
             "Region": os.getenv("Region"),
-            "secret_name": os.getenv("secret_name")
+            "secret_name": os.getenv("secret_name"),
             "token": user_model.token
            
         }

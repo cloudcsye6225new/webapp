@@ -70,3 +70,30 @@ def root(request: Request):
         statsd.timing("api_calls.health_check.duration", (time.time() - start_time) * 1000)
         return Response(status_code=503)
 
+@router.get("/cicd")
+def root(request: Request):
+    statsd.incr("api_calls.health_check.count")
+    start_time = time.time()
+
+    logger.info("Health check endpoint called")
+
+    if request.query_params:
+        logger.warning("Health check failed - Unexpected query parameters")
+        statsd.timing("api_calls.health_check.duration", (time.time() - start_time) * 1000)
+        return Response(status_code=400)
+    if request_has_body(request):
+        logger.warning("Health check failed - Unexpected request body")
+        statsd.timing("api_calls.health_check.duration", (time.time() - start_time) * 1000)
+        return Response(status_code=400)
+    
+    status = postgres_status()
+    if "running" in status.lower():
+        logger.info("Health check passed - Database is connected")
+        headers = {"Cache-Control": "no-cache"}
+        statsd.timing("api_calls.health_check.duration", (time.time() - start_time) * 1000)
+        return Response(headers=headers)
+    else:
+        logger.warning("Health check failed - Database is not reachable")
+        statsd.timing("api_calls.health_check.duration", (time.time() - start_time) * 1000)
+        return Response(status_code=503)
+
